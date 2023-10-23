@@ -108,8 +108,6 @@
                     $('#up_price').val(res.data.price);
                     $('#up_quantity').val(res.data.quantity);
 
-
-
                     // console.log(res);
                 }
 
@@ -148,7 +146,7 @@
 
                     let error=err.responseJSON
                     $.each(error.errors,function(index,value){
-                        $('errMsgContainer'),append('<span class="text-danger'+value+'</span>');
+                        $('errMsgContainer'),append('<span class="text-danger">'+value+'</span>');
                     });
 
                 }

@@ -58,13 +58,14 @@ public function AddProduct(Request $request){
 
 // Edit Product
 public function EditProduct(Request $request){
+    // dd($request->all());
     $product=Product::findOrFail($request->id);
     return response()->json([
 
        'status'=> 'success',
        'data'=>$product,
     ]);
-
+// dd($request->all());
 }
 
 // UpdateProduct
@@ -72,7 +73,7 @@ public function UpdateProduct(Request $request){
 
     $request->validate(
         [
-        'name'=> 'required|unique:products,name' .$request->up_id,
+        'name'=> 'required|unique:products,name,' .$request->id,
         'price'=> 'required',
         'quantity'=> 'required'
 
