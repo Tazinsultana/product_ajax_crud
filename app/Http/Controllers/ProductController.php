@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     public function Index(){
-        $product = Product::all();
+        $product = Product::latest()->paginate(5);
+        // $product = Product::latest()->get();
         return view('product',compact('product'));
     }
 
@@ -112,5 +113,29 @@ public function DeleteProduct(Request $request){
         'status'=> 'success'
     ]);
 
+}
+// Paginatate
+public function Paginate(Request $request){
+
+    $product = Product::latest()->paginate(5);
+    return view('paginate',compact('product'))->render();
+
+}
+// Live Search
+
+public function SearchProduct(Request $request){
+
+    $product= Product::where('name','like','%'.$request->search.'%')
+    ->orderBy('id','desc')
+    ->paginate(5);
+    if($product->count() >= 1){
+        return view('paginate', compact('product'))->render();
+
+    }
+    else{
+        return response()->json([
+            'status'=>'Nothing Found'
+        ]);
+    }
 }
 }
