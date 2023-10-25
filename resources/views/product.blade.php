@@ -34,7 +34,7 @@
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="product_body">
                         @foreach ($product as $key => $products)
                             <tr>
                                 <th scope="row">{{ $key + 1 }}</th>
@@ -53,7 +53,7 @@
                     </tbody>
 
                 </table>
-                {!! $product->links() !!}
+                {{-- {!! $product->links() !!} --}}
             </div>
 
             </div>

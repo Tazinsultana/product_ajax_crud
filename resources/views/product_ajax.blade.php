@@ -36,7 +36,8 @@
                     if (res.status == 'success') {
                         $('#addModal').modal('hide');
                         $('#add')[0].reset();
-                        $('.table').load(location.href + ' .table');
+                        // $('.table').load(location.href + ' .table');
+                        search();
 
                         Command: toastr["success"]("Product Added Successfully!!",
                             "Success")
@@ -95,7 +96,8 @@
 
                     success: function(res) {
                         if (res.status == 'success')
-                            $('.table').load(location.href + ' .table');
+                            // $('.table').load(location.href + ' .table');
+                            search();
 
                         Command: toastr["success"]("Product Deleted Successfully!!",
                             "Success")
@@ -181,7 +183,8 @@
 
                         $('#updateModal').modal('hide');
                         $('#update')[0].reset();
-                        $('.table').load(location.href + ' .table');
+                        // $('.table').load(location.href + ' .table');
+                        search();
 
                         Command: toastr["success"]("Product Updated Successfully!!",
                             "Success")
@@ -247,25 +250,54 @@
         }
 
         // Live Search
-        ;
-        $(document).on('keyup',function(e){
-            e.preventDefault();
-            let search=$('#search').val();
-            console.log(search);
-            $.ajax({
-                url:"{{ route('search.product') }}",
-                method:"GET",
-                data:{search},
-                success:function(res){
-                    $('.table-data').html(res);
-                    if(res.status=='Nothing Found'){
-                        $('.table-data').html('<span class="text-danger">'+'Nothing Found'+'</span>');
 
-                    }
+        function search() {
+            let search = $('#search').val();
+
+            $.ajax({
+                url: "{{ route('search.product') }}",
+                method: "GET",
+                data: {
+                    search
+                },
+                success: function(res) {
+                    const search_result = res.data;
+                    console.log(search_result);
+                    let r_res = '';
+                    $.each(search_result, function(key, item) {
+                        r_res += `
+                            <tr>
+                                <th scope="row">${key+1}</th>
+                                <td>${item.name}</td>
+                                <td>${item.price}</td>
+                                <td>${item.quantity}</td>
+                                <td>
+                                    <a href=""class="btn btn-success edit_modal" data-bs-toggle="modal"
+                                        data-bs-target="#updateModal" data-id="${item.id}">Edit</a>
+
+                                    <a href="" class="btn btn-danger delete_modal"
+                                        data-id="${item.id}">Delete</a>
+                                </td>
+                            </tr>
+
+                    `;
+                    })
+                    $('#product_body').html(r_res);
+                    // $('.table-data').html(res);
+                    // if(res.status=='Nothing Found'){
+                    //     $('.table-data').html('<span class="text-danger">'+'Nothing Found'+'</span>');
+
+                    // }
 
                 }
 
             })
+        }
+
+        $(document).on('keyup', function(e) {
+            e.preventDefault();
+            search();
+
         })
 
     });
