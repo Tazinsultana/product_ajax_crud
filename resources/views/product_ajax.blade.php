@@ -229,38 +229,20 @@
 
         });
 
-        // Paginate
-        $(document).on('click', '.pagination a', function(e) {
-            e.preventDefault();
-            let page = $(this).attr('href').split('page=')[1]
+ // Live Search
 
-            Product(page)
-        })
-
-        function Product(page) {
-            $.ajax({
-                url: "/pagination/paginate-data/?page=" + page,
-                success: function(res) {
-
-                    $('.table-data').html(res);
-                }
-
-
-            });
-        }
-
-        // Live Search
-
-        function search() {
+        function search(page = 0) {
             let search = $('#search').val();
 
             $.ajax({
                 url: "{{ route('search.product') }}",
                 method: "GET",
                 data: {
-                    search
+                    search,
+                    page
                 },
                 success: function(res) {
+                    console.log(res);
                     const search_result = res.data;
                     console.log(search_result);
                     let r_res = '';
@@ -283,11 +265,15 @@
                     `;
                     })
                     $('#product_body').html(r_res);
-                    // $('.table-data').html(res);
-                    // if(res.status=='Nothing Found'){
-                    //     $('.table-data').html('<span class="text-danger">'+'Nothing Found'+'</span>');
+                    let pagination='';
+                    for(let page=1; page<=res.total_page; page++){
+                        pagination+=`
+                        <a href=" " class="btn btn-sm btn-primary pagination_item" data-page="${page-1}">${page}</a>`;
 
-                    // }
+
+                    }
+                    $('#pagination_container').html(pagination);
+
 
                 }
 
@@ -298,6 +284,11 @@
             e.preventDefault();
             search();
 
+        })
+        $(document).on('click','.pagination_item',function(e){
+            e.preventDefault();
+            const page=$(this).data('page');
+            search(page);
         })
 
     });

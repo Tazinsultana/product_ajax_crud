@@ -53,7 +53,12 @@
                     </tbody>
 
                 </table>
-                {{-- {!! $product->links() !!} --}}
+                <div id="pagination_container" class="d-fex gap- 1">
+                    @for( $page=1;$page<=$total_page;$page++)
+                    <a href=" " class="btn btn-sm btn-primary pagination_item" data-page="{{ $page - 1 }}">{{ $page }}</a>
+                    @endfor
+                </div>
+
             </div>
 
             </div>

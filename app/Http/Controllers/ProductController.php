@@ -7,12 +7,31 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+
     public function Index(){
-        $product = Product::latest()->get();
-        // $product = Product::latest()->get();
-        return view('product',compact('product'));
+        $page=0;
+        $item=5;
+    $product = Product::latest()->skip($page*$item)->take($item)->get();
+    $item_count=Product::count();
+    $total_page= (int)ceil($item_count/$item);
+       return view('product',compact('product','total_page'));
     }
 
+    // Pagination
+    // public function Pagination(Request $request)
+    // {
+
+    //     $page=$request->page;
+    //     $item=5;
+    //     $product = Product::latest()->skip($page*$item)->take($item)->get();
+    //     $product_count=Product::count();
+    //     // dd($product_count);
+    //     $total_page= (int)ceil($product_count/5);
+    //     return response()->json([
+    //         'data'=>$product,
+    //         'total_page'=>$total_page
+    //      ]);
+    //     }
 
 // Add Product
 public function AddProduct(Request $request){
@@ -115,24 +134,26 @@ public function DeleteProduct(Request $request){
 
 }
 // Paginatate
-public function Paginate(Request $request){
+// public function Paginate(Request $request){
 
-    $product = Product::latest()->get();
-    return view('paginate',compact('product'))->render();
+//     $product = Product::latest()->get();
+//     return view('paginate',compact('product'))->render();
 
-}
+// }
 // Live Search
 
 public function SearchProduct(Request $request){
+    $page=$request->page;
+    $item=5;
 
     $product= Product::where('name','like','%'.$request->search.'%')
-    ->orderBy('id','desc')->get();
-
-    // if($product->count() >= 1){
-        // return view('paginate', compact('product'))->render();
+    ->orderBy('id','desc')->skip($page*$item)->take($item)->get();
+    $product_count=Product::where('name','like','%'.$request->search.'%')->count();
+    $total_page=(int)ceil($product_count/$item);
         return response()->json([
 
-            'data'=>$product
+            'data'=>$product,
+            'total_page'=>$total_page
         ]);
 
     // }
